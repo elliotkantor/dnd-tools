@@ -116,6 +116,34 @@ def custom_initiative():
         i += 1
 
 
+def monster_roller():
+    """
+    Rolls attack and damage for n monsters
+    """
+    mon_df = pd.read_csv("monsters.csv")
+    monster_regex = re.compile(r"(\d+\s*)?(.*)", re.I)
+    monster_str = input("Monster: ")
+    mo = monster_regex.search(monster_str)
+    num_mon = 1
+    if mo.group(1):
+        num_mon = int(mo.group(1))
+
+    # assign row
+    row = None
+    if mo.group(2) in list(mon_df["name"]):
+        row = mon_df.loc[mon_df["name"] == mo.group(2)]
+    else:
+        print("Could not find monster")
+        # return
+    
+    assert row is not None, "Must exist"
+    for i in range(num_mon):
+        dam_die = int(row["dam_dice"])
+        dam_bonus = int(row["dam_bonus"])
+        hit_bonus = int(row["to_hit"])
+        print(f"{mo.group(2)} {i + 1}: {random.randint(1, 20) + hit_bonus} to hit. {random.randint(1, dam_die) + dam_bonus} damage.")
+
+
 if __name__ == "__main__":
     menu_screen()
     print("Thanks for playing")
