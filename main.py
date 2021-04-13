@@ -1,6 +1,7 @@
 import random
 import pyinputplus as pyip
 import re
+import pandas as pd
 
 
 def menu_screen():
@@ -94,6 +95,25 @@ def fast_initiative():
         return
     for num in range(num_players):
         print(f"Player {num + 1}: {random.randint(1, 20)}")
+
+
+def custom_initiative():
+    """
+    Rolls initiative for all players in characters.csv based on their stats
+    """
+    char_df = pd.read_csv("characters.csv")
+    char_dict = {}
+    for i, char in enumerate(char_df["name"]):
+        roll = random.randint(1, 20)
+        mod = char_df.iloc[i]["initiative_mod"]
+        char_dict[char] = roll + mod
+        print(f"{char}: {roll} + {mod} = {roll + mod}")
+
+    # show order
+    i = 0
+    for name, _ in sorted(char_dict.items(), key=lambda x: x[1], reverse=True):
+        print(f"Turn {i + 1}: {name}")
+        i += 1
 
 
 if __name__ == "__main__":
