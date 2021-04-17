@@ -5,11 +5,13 @@ import pandas as pd
 
 
 def menu_screen():
-    feature_choices = ["dice roller", "fast initiative", "quit"]
+    feature_choices = ["dice roller", "fast initiative", "custom initiative", "monster roller", "quit"]
     while True:
         print()
         if len(feature_choices) > 1:
-            choice = pyip.inputMenu(feature_choices, prompt="Choose a feature:\n", numbered=True)
+            choice = pyip.inputMenu(feature_choices, prompt="Choose a feature:\n", numbered=True, blank=True)
+            if not choice:
+                return
         else:
             assert feature_choices, "Must exist"
             choice = feature_choices[0]
@@ -19,6 +21,10 @@ def menu_screen():
             dice_roller()
         if choice == feature_choices[1]:
             fast_initiative()
+        if choice == feature_choices[2]:
+            custom_initiative()
+        if choice == feature_choices[3]:
+            monster_roller()
         if choice == feature_choices[-1]:
             return
 
@@ -48,7 +54,7 @@ def dice_roller():
         mo = dice_regex.search(dice_input_str)
         if mo is None:
             print("Could not understand")
-            return
+            continue
 
         multiplier, bonus = 1, 0
         if mo.group(1):
@@ -61,6 +67,9 @@ def dice_roller():
                 bonus = int(mo.group(7))
 
         sides = int(mo.group(2)[1:])
+        if sides < 1:
+            print("Must have at least one side")
+            return
 
         # roll and calculate
         total = 0
